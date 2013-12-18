@@ -1,8 +1,4 @@
 ﻿using System.Reflection;
-<<<<<<< HEAD
-using System.Runtime.CompilerServices;
-=======
->>>>>>> folderlisting
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 

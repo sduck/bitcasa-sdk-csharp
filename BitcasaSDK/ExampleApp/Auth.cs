@@ -1,11 +1,5 @@
 ﻿using BitcasaSDK;
 using System;
-<<<<<<< HEAD
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-=======
->>>>>>> folderlisting
 using System.Threading.Tasks;
 
 namespace ExampleApp
@@ -34,14 +28,9 @@ namespace ExampleApp
 
             try
             {
-<<<<<<< HEAD
-                var token = await client.GetAccessToken(authCode);
-                Console.WriteLine(token);
-=======
                 await client.RequestAccessToken(authCode);
                 var output = await client.GetFoldersList(null);
                 Console.WriteLine(output);
->>>>>>> folderlisting
             }
             catch (Exception ex)
             {

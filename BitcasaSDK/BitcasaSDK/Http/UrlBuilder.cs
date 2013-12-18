@@ -2,20 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-<<<<<<< HEAD
-using System.Threading.Tasks;
-=======
->>>>>>> folderlisting
 
 namespace BitcasaSDK.Http
 {
     class UrlBuilder
     {
-<<<<<<< HEAD
-        private IDictionary<string, string> _params;
-=======
         private readonly IDictionary<string, string> _params;
->>>>>>> folderlisting
 
         public string BaseUrl { get; set; }
         public string Method { get; set; }
@@ -51,11 +43,7 @@ namespace BitcasaSDK.Http
             var parameters = (from entry in _params
                             select String.Format("{0}={1}", entry.Key, entry.Value)).ToArray();
 
-<<<<<<< HEAD
-            if (parameters.Count() > 0)
-=======
             if (parameters.Length > 0)
->>>>>>> folderlisting
             {
                 urlBuilder.Append("?").Append(String.Join("&", parameters));
             }
