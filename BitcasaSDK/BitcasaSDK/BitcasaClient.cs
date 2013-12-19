@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Security.Authentication;
 using BitcasaSDK.Dao;
 using BitcasaSDK.Dao.Converters;
@@ -31,6 +32,7 @@ namespace BitcasaSDK
         {
             _clientId = clientId;
             _clientSecret = clientSecret;
+            _httpRequestor = new HttpRequestor();
         }
 
         public string GetAuthenticateUrl()
@@ -65,7 +67,7 @@ namespace BitcasaSDK
             _accessToken = response.Result.AccessToken;
         }
 
-        public async Task<Response> GetFoldersList(string path)
+        public async Task<List<Item>> GetFoldersList(string path)
         {
             path = path ?? "";
 
@@ -76,7 +78,7 @@ namespace BitcasaSDK
 
             var response = JsonConvert.DeserializeObject<Response>(result, new ItemConverter(), new BitcasaTimeConverter());
 
-            return response;
+            return response.Result.Items;
         }
     }
 }

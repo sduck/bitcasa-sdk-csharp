@@ -12,13 +12,13 @@ namespace BitcasaSDK.Dao.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            if (reader.TokenType != JsonToken.Integer)
+            if (reader.TokenType != JsonToken.Integer && reader.TokenType != JsonToken.Float)
             {
                 throw new JsonSerializationException("Invalid BitcasaTime value");
 
             }
 
-            var timestamp = (long) reader.Value;
+            var timestamp = Convert.ToInt64(reader.Value);
             var time = new DateTime(1970, 1, 1, 0, 0, 0, 0);
             time = time.AddMilliseconds(timestamp).ToLocalTime();
 
