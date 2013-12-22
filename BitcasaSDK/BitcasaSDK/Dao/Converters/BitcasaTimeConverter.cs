@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace BitcasaSDK.Dao.Converters
+namespace BitcasaSdk.Dao.Converters
 {
     class BitcasaTimeConverter : JsonConverter
     {

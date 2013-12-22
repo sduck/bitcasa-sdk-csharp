@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json.Linq;
 
-namespace BitcasaSDK.Dao.Converters
+namespace BitcasaSdk.Dao.Converters
 {
     class ItemConverter : JsonItemConverter<Item>
     {

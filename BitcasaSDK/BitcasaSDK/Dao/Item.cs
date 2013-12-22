@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using BitcasaSDK.Dao.Converters;
+using BitcasaSdk.Dao.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace BitcasaSDK.Dao
+namespace BitcasaSdk.Dao
 {
 
     public class Item

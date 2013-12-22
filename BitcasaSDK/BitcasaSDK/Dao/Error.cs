@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BitcasaSDK.Dao
+namespace BitcasaSdk.Dao
 {
     public class Error
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BitcasaSDK.Http
+namespace BitcasaSdk.Http
 {
     class UrlBuilder
     {
@@ -11,17 +11,19 @@ namespace BitcasaSDK.Http
 
         public string BaseUrl { get; set; }
         public string Method { get; set; }
+        public string Path { get; set; }
         
-        public UrlBuilder()
+        public UrlBuilder() : this(null, null, null) { }
+
+        public UrlBuilder(string url, string method) : this(url, method, null) { }
+
+        public UrlBuilder(string baseUrl, string method, string path)
         {
             _params = new Dictionary<string, string>();
-        }
 
-        public UrlBuilder(string url, string method)
-            : this()
-        {
-            BaseUrl = url;
+            BaseUrl = baseUrl;
             Method = method;
+            Path = path;
         }
 
         public void AddParameter(string name, string value)
@@ -39,6 +41,11 @@ namespace BitcasaSDK.Http
             var urlBuilder = new StringBuilder();
 
             urlBuilder.Append(BaseUrl).Append(Method);
+
+            if (null != Path)
+            {
+                urlBuilder.Append(Path);
+            }
 
             var parameters = (from entry in _params
                             select String.Format("{0}={1}", entry.Key, entry.Value)).ToArray();

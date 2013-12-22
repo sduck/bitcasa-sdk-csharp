@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace BitcasaSDK.Dao
+namespace BitcasaSdk.Dao
 {
     public class Result
     {

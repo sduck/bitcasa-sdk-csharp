@@ -1,5 +1,5 @@
 
-namespace BitcasaSDK
+namespace BitcasaSdk
 {
     public class Constants
     {
@@ -9,7 +9,7 @@ namespace BitcasaSDK
         {
             public const string Oauth = "/oauth2/authenticate";
             public const string AccessToken = "/oauth2/access_token";
-            public const string Folders = "/folders/";
+            public const string Folders = "/folders";
         }
 
         public class Parameters

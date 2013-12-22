@@ -1,26 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Authentication;
-using BitcasaSDK.Dao;
-using BitcasaSDK.Dao.Converters;
-using BitcasaSDK.Http;
+using BitcasaSdk.Dao;
+using BitcasaSdk.Dao.Converters;
 using System;
 using System.Threading.Tasks;
+using BitcasaSDK.Exception;
+using BitcasaSdk.Exception;
+using BitcasaSdk.Http;
 using Newtonsoft.Json;
 
-namespace BitcasaSDK
+namespace BitcasaSdk
 {
     public class BitcasaClient
     {
         private readonly string _clientId;
         private readonly string _clientSecret;
-        private string _accessToken;
         private IHttpRequestor _httpRequestor;
 
-        public string AccessToken
-        {
-            get { return _accessToken; }
-        }
+        public string AccessToken { get; private set; }
 
         public IHttpRequestor HttpRequestor
         {
@@ -56,27 +54,32 @@ namespace BitcasaSDK
 
             if (null == response)
             {
-                throw new InvalidOperationException("Failed parsing the response from Bitcasa");
+                throw new BitcasaSdkAuthenticationException("Failed parsing the response from Bitcasa");
             }
 
             if (response.HasError())
             {
-                throw new AuthenticationException(String.Format("Failed to get token: {0}", response.Error));
+                throw new BitcasaSdkAuthenticationException(response.Error);
             }
 
-            _accessToken = response.Result.AccessToken;
+            AccessToken = response.Result.AccessToken;
         }
 
         public async Task<List<Item>> GetFoldersList(string path)
         {
-            path = path ?? "";
+            path = path ?? "/";
 
-            var urlBuilder = new UrlBuilder(Constants.ApiUrl, Constants.Methods.Folders);
-            urlBuilder.AddParameter(Constants.Parameters.AccessToken, _accessToken);
+            var urlBuilder = new UrlBuilder(Constants.ApiUrl, Constants.Methods.Folders, path);
+            urlBuilder.AddParameter(Constants.Parameters.AccessToken, AccessToken);
 
             var result = await _httpRequestor.GetString(HttpMethod.Get, urlBuilder.ToString());
 
             var response = JsonConvert.DeserializeObject<Response>(result, new ItemConverter(), new BitcasaTimeConverter());
+
+            if (response.HasError())
+            {
+                throw new BitcasaSdkServerException(response.Error);
+            }
 
             return response.Result.Items;
         }

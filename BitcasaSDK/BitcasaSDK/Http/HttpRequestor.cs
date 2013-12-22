@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace BitcasaSDK.Http
+namespace BitcasaSdk.Http
 {
     public class HttpRequestor : IHttpRequestor
     {

@@ -22,5 +22,29 @@ namespace ExampleApp.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string clientId {
+            get {
+                return ((string)(this["clientId"]));
+            }
+            set {
+                this["clientId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string clientSecret {
+            get {
+                return ((string)(this["clientSecret"]));
+            }
+            set {
+                this["clientSecret"] = value;
+            }
+        }
     }
 }
