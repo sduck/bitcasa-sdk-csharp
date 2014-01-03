@@ -1,4 +1,4 @@
-Bitcasa SDK for C#
+Bitcasa SDK for C# [![Analytics](https://ga-beacon.appspot.com/UA-1404153-4/bitcasa-sdk-csharp/readme)](https://github.com/igrigorik/ga-beacon)
 ===============
 
 Bitcasa SDK for C#, providing access to Bitcasa's REST API. It is inspired by the officiel [Java SDK](https://github.com/bitcasa/bitcasa-sdk-java)
