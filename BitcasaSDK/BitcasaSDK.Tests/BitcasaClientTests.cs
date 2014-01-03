@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using BitcasaSDK.Dao;
-using BitcasaSDK.Http;
+using BitcasaSdk.Dao;
+using BitcasaSdk.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace BitcasaSDK.Tests
+namespace BitcasaSdk.Tests
 {
     [TestClass]
     public class BitcasaClientTests
@@ -99,17 +100,18 @@ namespace BitcasaSDK.Tests
             {
                 HttpRequestor = requestorMock.Object
             };
+            typeof(BitcasaClient).GetProperty("AccessToken").SetValue(client, "token", null);
 
 
             // act
-            var result = await client.GetFoldersList(null);
+            var result = await client.GetItemsInFolder(null);
 
             // assert
-            requestorMock.Verify(req => req.GetString(HttpMethod.Get, It.IsAny<string>()), Times.Once);
-            Assert.IsInstanceOfType(result, typeof(Response));
-            Assert.AreEqual(3, result.Result.Items.Count);
+            requestorMock.Verify(req => req.GetString(HttpMethod.Get, It.IsAny<string>()), Times.AtLeastOnce);
+            Assert.IsInstanceOfType(result, typeof(List<Item>));
+            Assert.AreEqual(4, result.Count);
 
-            var sut = result.Result.Items[0];
+            var sut = result[1];
             Assert.IsInstanceOfType(sut, typeof(Folder));
             Assert.AreEqual(Category.Folders, sut.Category);
             Assert.AreEqual(ItemType.Folder, sut.Type);
@@ -123,7 +125,7 @@ namespace BitcasaSDK.Tests
             Assert.AreEqual("SANULTRA", sut.OriginDevice);
             Assert.AreEqual("3267088014", sut.OriginDeviceId);
 
-            sut = result.Result.Items[1];
+            sut = result[2];
             Assert.IsInstanceOfType(sut, typeof(Folder));
             Assert.AreEqual(Category.Folders, sut.Category);
             Assert.AreEqual(ItemType.Folder, sut.Type);

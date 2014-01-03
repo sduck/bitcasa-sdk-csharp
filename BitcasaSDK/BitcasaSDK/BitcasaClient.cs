@@ -1,25 +1,22 @@
-﻿using System.Net.Http;
-using System.Security.Authentication;
-using BitcasaSDK.Dao;
-using BitcasaSDK.Dao.Converters;
-using BitcasaSDK.Http;
-using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using BitcasaSdk.Dao;
+using BitcasaSdk.Dao.Converters;
 using System.Threading.Tasks;
+using BitcasaSDK.Exception;
+using BitcasaSdk.Http;
 using Newtonsoft.Json;
 
-namespace BitcasaSDK
+namespace BitcasaSdk
 {
     public class BitcasaClient
     {
         private readonly string _clientId;
         private readonly string _clientSecret;
-        private string _accessToken;
         private IHttpRequestor _httpRequestor;
 
-        public string AccessToken
-        {
-            get { return _accessToken; }
-        }
+        public string AccessToken { get; private set; }
 
         public IHttpRequestor HttpRequestor
         {
@@ -31,6 +28,7 @@ namespace BitcasaSDK
         {
             _clientId = clientId;
             _clientSecret = clientSecret;
+            _httpRequestor = new HttpRequestor();
         }
 
         public string GetAuthenticateUrl()
@@ -54,29 +52,137 @@ namespace BitcasaSDK
 
             if (null == response)
             {
-                throw new InvalidOperationException("Failed parsing the response from Bitcasa");
+                throw new BitcasaSdkAuthenticationException("Failed parsing the response from Bitcasa");
             }
 
             if (response.HasError())
             {
-                throw new AuthenticationException(String.Format("Failed to get token: {0}", response.Error));
+                throw new BitcasaSdkAuthenticationException(response.Error);
             }
 
-            _accessToken = response.Result.AccessToken;
+            AccessToken = response.Result.AccessToken;
         }
 
-        public async Task<Response> GetFoldersList(string path)
+        public async Task<List<Item>> GetItemsInFolder(Folder folder)
         {
-            path = path ?? "";
+            ValidateAccessToken();
 
-            var urlBuilder = new UrlBuilder(Constants.ApiUrl, Constants.Methods.Folders);
-            urlBuilder.AddParameter(Constants.Parameters.AccessToken, _accessToken);
+            List<Item> result = null;
+
+            // Inspired by JavaSdk, we do some "magic" here
+            var syncType = null == folder ? (SyncType?)null : folder.SyncType;
+
+            if (null == folder || SyncType.Device == syncType || SyncType.MirroredFolder == syncType)
+            {
+                var items = await GetItemsInPath(null);
+
+                var infiniteDrive = ExtractInfiniteDrive(items);
+                var devices = ExtractMirroredDevices(items);
+
+                switch (syncType)
+                {
+                    case SyncType.MirroredFolder:
+                        return devices.Keys.ToList<Item>();
+                    case SyncType.Device:
+                        return devices[folder];
+                    default:
+                    {
+                        var infDriveContent = await GetItemsInFolder(infiniteDrive);
+                        items.AddRange(infDriveContent);
+                        result = items;
+                    }
+                        break;
+                }
+            }
+            else
+            {
+                result = await GetItemsInPath(folder.Path);
+            }
+
+            return result;
+        }
+
+        private async Task<List<Item>> GetItemsInPath(string path)
+        {
+            path = path ?? "/";
+
+            var urlBuilder = new UrlBuilder(Constants.ApiUrl, Constants.Methods.Folders, path);
+            urlBuilder.AddParameter(Constants.Parameters.AccessToken, AccessToken);
 
             var result = await _httpRequestor.GetString(HttpMethod.Get, urlBuilder.ToString());
 
             var response = JsonConvert.DeserializeObject<Response>(result, new ItemConverter(), new BitcasaTimeConverter());
 
-            return response;
+            if (response.HasError())
+            {
+                throw new BitcasaSdkServerException(response.Error);
+            }
+
+            return response.Result.Items;
+        }
+
+        private void ValidateAccessToken()
+        {
+            if (null == AccessToken)
+            {
+                throw new BitcasaSdkAuthenticationException("No Access Token found");
+            }
+        }
+
+        private Folder ExtractInfiniteDrive(List<Item> items)
+        {
+            var infiniteDrive = items.FirstOrDefault(i => i.SyncType == SyncType.InfiniteDrive) as Folder;
+
+            if (null != infiniteDrive)
+            {
+                items.Remove(infiniteDrive);
+            }
+
+            return infiniteDrive;
+        }
+
+        private Dictionary<Folder, List<Item>> ExtractMirroredDevices(IList<Item> items)
+        {
+            Dictionary<Folder, List<Item>> mirroredDevices = null;
+
+            var mirrored = (from item in items
+                where item.SyncType == SyncType.Backup || item.SyncType == SyncType.Sync
+                select item).ToList();
+
+            if (mirrored.Count > 0)
+            {
+                mirroredDevices = new Dictionary<Folder, List<Item>>();
+
+                foreach (var item in mirrored)
+                {
+                    var device = new Folder()
+                    {
+                        Category = Category.Folders,
+                        SyncType = SyncType.Device,
+                        Mirrored = true,
+                        Type = ItemType.Folder,
+                        Name = item.OriginDevice ?? "No Device Name"
+                    };
+
+                    if (!mirroredDevices.ContainsKey(device))
+                    {
+                        mirroredDevices.Add(device, new List<Item>());
+                    }
+                    mirroredDevices[device].Add(device);
+                    items.Remove(item);
+                }
+
+                items.Add(new Folder()
+                {
+                    Category = Category.Folders,
+                    SyncType = SyncType.MirroredFolder,
+                    Name = "Mirrored Folders",
+                    Type = ItemType.Folder,
+                    Mirrored = true
+                });
+            }
+
+            return mirroredDevices;
         }
     }
 }

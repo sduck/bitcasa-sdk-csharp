@@ -65,9 +65,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BitcasaSDK\BitcasaSDK.csproj">
+    <ProjectReference Include="..\BitcasaSDK\BitcasaSdk.csproj">
       <Project>{19CFCADA-318A-47FF-924F-09FCF51E7D80}</Project>
-      <Name>BitcasaSDK</Name>
+      <Name>BitcasaSdk</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

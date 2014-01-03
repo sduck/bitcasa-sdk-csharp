@@ -56,6 +56,10 @@
     <Compile Include="Dao\Item.cs" />
     <Compile Include="Dao\Response.cs" />
     <Compile Include="Dao\Result.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Exception\BitcasaSdkAuthenticationException.cs" />
+    <Compile Include="Exception\BitcasaSdkException.cs" />
+    <Compile Include="Exception\BitcasaSdkServerException.cs" />
     <Compile Include="Http\HttpRequestor.cs" />
     <Compile Include="Http\IHttpRequestor.cs" />
     <Compile Include="Http\UrlBuilder.cs" />

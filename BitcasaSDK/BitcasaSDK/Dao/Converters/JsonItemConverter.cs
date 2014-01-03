@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace BitcasaSDK.Dao.Converters
+namespace BitcasaSdk.Dao.Converters
 {
     abstract class JsonItemConverter<T> : JsonConverter
     {

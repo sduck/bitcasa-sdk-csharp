@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace BitcasaSDK.Tests.Helpers
+namespace BitcasaSdk.Tests.Helpers
 {
     class StreamHelper
     {

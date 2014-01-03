@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace BitcasaSDK.Tests.Stubs
+namespace BitcasaSdk.Tests.Stubs
 {
     class HttpRequestorStub
     {

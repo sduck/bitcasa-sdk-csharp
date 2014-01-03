@@ -1,5 +1,5 @@
 
-namespace BitcasaSDK.Dao
+namespace BitcasaSdk.Dao
 {
     public class Response
     {
