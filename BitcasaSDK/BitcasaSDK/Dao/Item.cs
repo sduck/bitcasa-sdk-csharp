@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Runtime.Serialization;
 using BitcasaSdk.Dao.Converters;
 using Newtonsoft.Json;
@@ -38,11 +39,52 @@ namespace BitcasaSdk.Dao
 
         [JsonProperty("origin_device_id")]
         public string OriginDeviceId { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (null == obj)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            var other = obj as Item;
+            if (null == other)
+            {
+                return false;
+            }
+
+            if (Category != other.Category)
+            {
+                return false;
+            }
+
+            if (Mirrored != other.Mirrored)
+            {
+                return false;
+            }
+
+            if (null == Name && null != other.Name)
+            {
+                return false;
+            }
+            if (Name != other.Name)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 
     public enum Category
     {
-        Folders
+        Folders,
+        Other
     }
 
     public enum ItemType
@@ -56,6 +98,10 @@ namespace BitcasaSdk.Dao
         Backup,
 
         [EnumMember(Value = "infinite drive")]
-        InfiniteDrive
+        InfiniteDrive,
+        Regular,
+        Sync,
+        Device,
+        MirroredFolder
     }
 }

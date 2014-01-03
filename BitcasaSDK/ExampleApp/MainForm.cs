@@ -93,10 +93,8 @@ namespace ExampleApp
                 return;
             }
 
-            string path = (null == folder) ? null : folder.Path;
-
             lblStatus.Text = @"Loading folder list...";
-            var folders = await _client.GetFoldersList(path);
+            var folders = await _client.GetItemsInFolder(folder);
 
             lstResult.Items.Add(String.Format("----- START ({0} folders) -----", folders.Count));
             foreach (var fldr in folders)

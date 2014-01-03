@@ -100,17 +100,18 @@ namespace BitcasaSdk.Tests
             {
                 HttpRequestor = requestorMock.Object
             };
+            typeof(BitcasaClient).GetProperty("AccessToken").SetValue(client, "token", null);
 
 
             // act
-            var result = await client.GetFoldersList(null);
+            var result = await client.GetItemsInFolder(null);
 
             // assert
-            requestorMock.Verify(req => req.GetString(HttpMethod.Get, It.IsAny<string>()), Times.Once);
+            requestorMock.Verify(req => req.GetString(HttpMethod.Get, It.IsAny<string>()), Times.AtLeastOnce);
             Assert.IsInstanceOfType(result, typeof(List<Item>));
-            Assert.AreEqual(3, result.Count);
+            Assert.AreEqual(4, result.Count);
 
-            var sut = result[0];
+            var sut = result[1];
             Assert.IsInstanceOfType(sut, typeof(Folder));
             Assert.AreEqual(Category.Folders, sut.Category);
             Assert.AreEqual(ItemType.Folder, sut.Type);
@@ -124,7 +125,7 @@ namespace BitcasaSdk.Tests
             Assert.AreEqual("SANULTRA", sut.OriginDevice);
             Assert.AreEqual("3267088014", sut.OriginDeviceId);
 
-            sut = result[1];
+            sut = result[2];
             Assert.IsInstanceOfType(sut, typeof(Folder));
             Assert.AreEqual(Category.Folders, sut.Category);
             Assert.AreEqual(ItemType.Folder, sut.Type);
