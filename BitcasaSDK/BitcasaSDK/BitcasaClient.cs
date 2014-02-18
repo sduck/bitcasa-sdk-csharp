@@ -102,6 +102,11 @@ namespace BitcasaSdk
             return result;
         }
 
+        public void DownloadFile()
+        {
+
+        }
+
         private async Task<List<Item>> GetItemsInPath(string path)
         {
             path = path ?? "/";

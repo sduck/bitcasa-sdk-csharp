@@ -40,6 +40,11 @@ namespace BitcasaSdk.Dao
         [JsonProperty("origin_device_id")]
         public string OriginDeviceId { get; set; }
 
+        public override string ToString()
+        {
+            return String.Format("[Item] {0} - {1}", Name, Path);
+        }
+
         public override bool Equals(object obj)
         {
             if (null == obj)
@@ -84,7 +89,8 @@ namespace BitcasaSdk.Dao
     public enum Category
     {
         Folders,
-        Other
+        Other,
+        Documents
     }
 
     public enum ItemType

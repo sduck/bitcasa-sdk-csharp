@@ -10,6 +10,7 @@ namespace BitcasaSdk
             public const string Oauth = "/oauth2/authenticate";
             public const string AccessToken = "/oauth2/access_token";
             public const string Folders = "/folders";
+            public const string Files = "/files";
         }
 
         public class Parameters
@@ -19,6 +20,7 @@ namespace BitcasaSdk
             public const string Secret = "secret";
             public const string Code = "code";
             public const string AccessToken = "access_token";
+            public const string Path = "path"
         }
     }
 }
